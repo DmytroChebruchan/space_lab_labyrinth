@@ -1,0 +1,18 @@
+{
+  "x0_y0": {"x": 0, "y": 0, "objects": null},
+  "x1_y0": {"x": 1, "y": 0, "objects": null},
+  "x1_y1": {"x": 1, "y": 1, "objects": null},
+  "x2_y1": {"x": 2, "y": 1, "objects": null},
+  "x2_y2": {"x": 2, "y": 2, "objects": {"key": 1}, "special": true},
+  "x3_y1": {"x": 3, "y": 1, "objects": null},
+  "x3_y0": {"x": 3, "y": 0, "objects": null},
+  "x4_y0": {"x": 4, "y": 0, "objects": null},
+  "x5_y0": {"x": 5, "y": 0, "objects": null},
+  "x5_y1": {"x": 5, "y": 1, "objects": null},
+  "x6_y1": {"x": 6, "y": 1, "objects": {"heart": 1}, "special": true},
+  "x5_y2": {"x": 5, "y": 2, "objects": null},
+  "x5_y3": {"x": 5, "y": 3, "objects": null},
+  "x4_y3": {"x": 4, "y": 3, "objects": {"heart": 1}, "special": true},
+  "x6_y3": {"x": 6, "y": 3, "objects": null},
+  "x7_y3": {"x": 7, "y": 3, "objects": {"Golem": 1}, "special": true}
+}

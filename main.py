@@ -1,21 +1,15 @@
-from game_elements import Labyrinth, Cell, Player
-from action_functions import to_hit_players, game_loop, create_players_dict
+from action_functions import create_players_dict, game_loop
+from game_elements import Labyrinth
 
 
 def main():
-    labyrinth_instance = Labyrinth()
+    players_list = create_players_dict()
+    if not players_list:
+        return
 
-    player_instance = Player()
-    players_dict = create_players_dict()
+    labyrinth = Labyrinth()
 
-    cell_instance = Cell(labyrinth=labyrinth_instance.labyrinth_map)
-
-    cell_instance.add_player_location(players_dict)
-
-    game_loop(cell_instance, player_instance, players_dict)
-    to_hit_players(cell_instance, player_instance, players_dict)
-
-    cell_instance.add_player_location(players_dict)
+    game_loop(labyrinth, players_list)
 
 
 if __name__ == "__main__":

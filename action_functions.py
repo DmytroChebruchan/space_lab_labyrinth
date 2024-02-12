@@ -1,13 +1,15 @@
 from constants import DIRECTIONS
+from game_elements import Player
+from text_generators import move_instructions_text, users_move_collector
 
 
-def to_hit_players(cell_instance, player_instance):
+def to_hit_players(cell_instance, player_instance, players_dict):
     try_counter = 3
 
-    if len(cell_instance.players.keys()) > 1:
-        for player_name, player_info in cell_instance.players.items():
+    if len(players_dict.keys()) > 1:
+        for player_name, player_info in players_dict.items():
             if player_info.active is True:
-                current_player = player_instance.players[player_name]
+                current_player = players_dict[player_name]
                 current_player.active = True
                 other_player = []
 
@@ -15,29 +17,25 @@ def to_hit_players(cell_instance, player_instance):
                     for _ in cell_instance.labyrinth.values():
                         for name, value in _.items():
                             if (
-                                name in cell_instance.players.keys()
+                                name in players_dict.keys()
                                 and name != current_player.name
                             ):
                                 other_player.append(name)
 
                     other_player = ", ".join(other_player)
 
-                    hit = input(
-                        f"""
-You can hit {other_player} for 1 damage and finish your move, or skip hit and move to another cell.
-If you want to hit player - enter player`s name.
-If you want to move - enter MOVE.
-"""
-                    )
+                    hit = users_move_collector(other_player)
+
                     if hit == "MOVE":
-                        move(cell_instance, player_instance)
+                        move(cell_instance, players_dict)
+
                     elif hit in other_player:
-                        cell_instance.players[hit].health -= 1
-                        cell_instance.players[
+                        players_dict[hit].health -= 1
+                        players_dict[
                             current_player.name
                         ].active = False
                         print(
-                            f"{cell_instance.players[hit].name} was damaged! {cell_instance.players[hit].health} health points left."
+                            f"{players_dict[hit].name} was damaged! {players_dict[hit].health} health points left."
                         )
 
                         return cell_instance
@@ -54,18 +52,10 @@ If you want to move - enter MOVE.
         return cell_instance
 
 
-def move(cell_instance, player_instance):
-    """При вводе в консоль
-    UP - изменит положение персонажа записав х + 1 ,
-    DOWN - х - 1,
-    LEFT - у - 1,
-    RIGHT - у + 1.
-    Перезаписывает поле location и меняет статус поля active на False.
-    """
-
-    for player_name, player_info in cell_instance.players.items():
+def move(cell_instance, players_dict):
+    for player_name, player_info in players_dict.items():
         if player_info.active is True:
-            current_player = player_instance.players[player_name]
+            current_player = players_dict[player_name]
             current_player.active = True
 
             max_attempts = 3
@@ -119,15 +109,16 @@ def move(cell_instance, player_instance):
         return cell_instance
 
 
-def game_loop(cell_instance, player_instance):
-    while len(cell_instance.players.items()) > 0:
-        for player_name, player_info in cell_instance.players.items():
-            current_player = player_instance.players[player_name]
+def game_loop(cell_instance, player_instance, players_dict):
+    while len(players_dict.items()) > 0:
+        for player_name, player_info in players_dict.items():
+            current_player = players_dict[player_name]
             current_player.active = True
 
             if player_info.active is True and player_info.health > 0:
                 print(f"{player_info.name} is active!")
-                to_hit_players(cell_instance, player_instance)
+                to_hit_players(cell_instance, player_instance, players_dict)
+
                 if cell_instance.players[player_name] is False:
                     print(f"{player_info.name}")
 
@@ -137,18 +128,17 @@ def game_loop(cell_instance, player_instance):
                     f"{player_info.name} has {player_info.health} points of health. Game over!"
                 )
                 del cell_instance.players[player_name]
-            # current_player.active = False
 
 
-def move_instructions_text(attempts, max_attempts, player_name):
-    users_move = input(
-        f"""
-{player_name} ,where would you like to move?
-You have {max_attempts - attempts} chances for correct input:
-UP to move up,
-DOWN to move down,
-LEFT to move left,
-RIGHT to move right
-"""
-    )
-    return users_move
+def create_players_dict():
+    quantity = input("How many players? ")
+    if not quantity.isdigit():
+        print("Invalid! Enter correct number of players")
+        return
+
+    players = {}
+    for _ in range(int(quantity)):
+        name = input(f"Enter name of player {_ + 1}: ")
+        players[name] = Player(name=name)
+
+    return players

@@ -3,15 +3,12 @@ import random
 
 
 class Labyrinth:
-    def __init__(self, labyrinth_map: dict = None):
-        self.labyrinth_map = labyrinth_map or {}
+    labyrinth_map = {}
 
-    def generate_labyrinth(self) -> dict:
+    def __init__(self):
         # Генерирует лабиринт из файла 'labyrinth.json'
         with open("labyrinth.json", "r") as json_file:
-            data = json.load(json_file)
-            self.labyrinth_map.update(data)
-        return self.labyrinth_map
+            self.labyrinth_map = json.load(json_file)
 
     def make_fire(self):
         # Генерирует в 5-ти случайных ячейках пламя
@@ -36,12 +33,12 @@ class Labyrinth:
 
 class Cell:
     def __init__(self, labyrinth: Labyrinth, players: dict = None):
-        self.labyrinth = labyrinth.labyrinth_map
-        self.players = players or {}
+        self.labyrinth = labyrinth
 
-    def add_player_location(self):
-        # Добавляет игрока в ячейку лабиринта и удаляет его, после того как игрок переходит на другую ячейку
-        for player in self.players.values():
+    def add_player_location(self, players):
+        # Добавляет игрока в ячейку лабиринта и удаляет его, после того как
+        # игрок переходит на другую ячейку
+        for player in players.values():
             cell_key = f"x{player.location[0]}_y{player.location[1]}"
             if cell_key in self.labyrinth:
                 for _ in self.labyrinth.values():
@@ -67,36 +64,31 @@ class Cell:
         return self.labyrinth
 
     def __str__(self):
-        return f"LABYRINTH:{self.labyrinth}\nPLAYERS:{self.players}"
+        return f"LABYRINTH:{self.labyrinth}\n"
 
 
 class Player:
+    location = [0, 0]
+    active: bool = False
+    health: int = 5
+    items: dict = {}
+    players = {}
+
     def __init__(
         self,
         name: str = "",
-        x: int = 0,
-        y: int = 0,
-        active: bool = False,
-        health: int = 5,
-        items: dict = None,
-        players: dict = None,
     ):
         self.name = name
-        self.active = active
-        self.location = [x, y]
-        self.health = health
-        self.items = items
-        self.players = players or {}
 
     def add_player(self):
         # Добавляет игроков в игру
         quantity = input("How many players? ")
-        if quantity.isdigit():
-            quantity = int(quantity)
-            for _ in range(quantity):
-                name = input("Enter your name: ")
-                self.players[name] = Player(name=name)
-        else:
+        if not quantity.isdigit():
             print("Invalid! Enter correct number of players")
+            return
+
+        for _ in range(int(quantity)):
+            name = input("Enter your name: ")
+            self.players[name] = Player(name=name)
 
         return self.players

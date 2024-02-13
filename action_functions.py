@@ -43,7 +43,7 @@ def game_loop(labyrinth, players_list):
     game_loop(labyrinth, players_list)
 
 
-def create_players_dict():
+def create_players_list():
     quantity = input("How many players? ")
     if not quantity.isdigit() or int(quantity) <= 1:
         print("Invalid! Enter correct number of players. 2 and more.")
